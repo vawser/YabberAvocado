@@ -2,6 +2,7 @@
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using System;
 
 namespace SoulsFormats
 {
@@ -79,7 +80,7 @@ namespace SoulsFormats
                 int num5 = br.ReadInt32();
                 int count2 = br.ReadInt32();
                 br.ReadInt32();
-                br.AssertInt32(new int[1]);
+                br.AssertInt32(new int[] { 0, 1 });
                 br.AssertInt32(new int[1]);
                 br.AssertInt32(new int[1]);
                 Section12s = new List<int>((IEnumerable<int>)br.GetInt32s((long)num4, count1));
@@ -319,13 +320,13 @@ namespace SoulsFormats
 
             internal FFXTransition(BinaryReaderEx br)
             {
-                int num1 = (int)br.AssertInt16((short)10, (short)11);
+                int num1 = (int)br.AssertInt16((short)8, (short)10, (short)11);
                 int num2 = (int)br.AssertByte(new byte[1]);
                 int num3 = (int)br.AssertByte((byte)1);
                 br.AssertInt32(new int[1]);
                 TargetStateIndex = br.ReadInt32();
                 br.AssertInt32(new int[1]);
-                Unk10 = br.AssertInt32(16842748, 16842749, 16842751);
+                Unk10 = br.AssertInt32(16842748, 16842749, 16842750, 16842751);
                 br.AssertInt32(new int[1]);
                 br.AssertInt32(1);
                 br.AssertInt32(new int[1]);
@@ -335,7 +336,7 @@ namespace SoulsFormats
                 br.AssertInt32(new int[1]);
                 br.AssertInt32(new int[1]);
                 br.AssertInt32(new int[1]);
-                Unk38 = br.AssertInt32(16842748, 16842749, 16842751);
+                Unk38 = br.AssertInt32(16842748, 16842749, 16842750, 16842751);
                 br.AssertInt32(new int[1]);
                 br.AssertInt32(1, 0);
                 br.AssertInt32(new int[1]);
@@ -910,7 +911,7 @@ namespace SoulsFormats
 
             internal Section9(BinaryReaderEx br)
             {
-                int num1 = (int)br.AssertInt16((short)48, (short)64);
+                int num1 = (int)br.AssertInt16((short)48, (short)64, (short)67);
                 int num2 = (int)br.AssertByte(new byte[1]);
                 int num3 = (int)br.AssertByte((byte)1);
                 Unk04 = br.ReadInt32();

@@ -560,8 +560,10 @@ namespace Yabber
             }
             else
             {
-                Console.WriteLine($"Yabber XML not found in: {sourceName}");
-                return true;
+                foreach (string sourceFile in Directory.EnumerateFiles(sourceDir))
+                {
+                    UnpackFile(sourceFile, progress);
+                }
             }
             return false;
         }
