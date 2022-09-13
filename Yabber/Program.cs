@@ -344,7 +344,7 @@ namespace Yabber
                     FXR3 fxr = FXR3.Read(sourceFile);
                     fxr.Unpack(sourceFile);
                 }
-                else if (sourceFile.EndsWith(".fxr.json") || sourceFile.EndsWith(".fxr.dcx.xml"))
+                else if (sourceFile.EndsWith(".fxr.xml") || sourceFile.EndsWith(".fxr.dcx.xml"))
                 {
                     Console.WriteLine($"Repacking FXR3: {filename}...");
                     YFXR3.Repack(sourceFile);
