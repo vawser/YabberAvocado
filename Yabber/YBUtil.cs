@@ -96,7 +96,7 @@ namespace Yabber
             if (Directory.Exists(path))
             {
                 string name = new DirectoryInfo(path).Name;
-                string bakDirPath = "BAK" + Regex.Replace(name, "^[^\\-]+\\-", "-") + "-unpacked";
+                string bakDirPath = new DirectoryInfo(path).Parent.FullName + "\\BAK" + Regex.Replace(name, "^[^\\-]+\\-", "-") + "-unpacked";
                 string pathInBakDir = $"{bakDirPath}\\{name}";
 
                 if (!Directory.Exists(bakDirPath)) Directory.CreateDirectory(bakDirPath);
@@ -113,7 +113,7 @@ namespace Yabber
             else if (File.Exists(path))
             {
                 string name = Path.GetFileName(path);
-                string bakDirPath = "BAK" + Regex.Replace(name, "^[^\\.]+\\.", ".").Replace(".", "-");
+                string bakDirPath = new DirectoryInfo(path).Parent.FullName + "\\BAK" + Regex.Replace(name, "^[^\\.]+\\.", ".").Replace(".", "-");
                 string pathInBakDir = $"{bakDirPath}\\{name}";
 
                 if (!Directory.Exists(bakDirPath)) Directory.CreateDirectory(bakDirPath);
@@ -145,20 +145,22 @@ namespace Yabber
 
         public static void XmlSerialize<T>(object obj, string sourceFile)
         {
-            var writer = new StreamWriter($"{sourceFile}.xml");
-            var settings = new XmlWriterSettings() { Indent = true };
-            var xw = XmlWriter.Create(writer, settings);
-            var xmlSer = new XmlSerializer(typeof(T));
+            using (var xw = XmlWriter.Create($"{sourceFile}.xml", new XmlWriterSettings() { Indent = true }))
+            {
+                var xmlSer = new XmlSerializer(typeof(T));
 
-            xmlSer.Serialize(xw, obj);
+                xmlSer.Serialize(xw, obj);
+            }
         }
 
         public static T XmlDeserialize<T>(string sourceFile)
         {
-            var textReader = new StreamReader(sourceFile);
-            var xmlSer = new XmlSerializer(typeof(T));
+            using (var xw = XmlReader.Create(sourceFile))
+            {
+                var xmlSer = new XmlSerializer(typeof(T));
 
-            return (T)xmlSer.Deserialize(textReader);
+                return (T)xmlSer.Deserialize(xw);
+            }
         }
     }
 }
