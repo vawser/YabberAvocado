@@ -175,6 +175,13 @@ namespace Yabber
                     fxr.Compression = compression;
                     fxr.Unpack(sourceFile);
                 }
+                else if (sourceFile.EndsWith(".btab.dcx"))
+                {
+                    Console.WriteLine($"Unpacking BTAB: {filename}...");
+                    BTAB btab = BTAB.Read(bytes);
+                    btab.Compression = compression;
+                    btab.Unpack(sourceFile);
+                }
                 else if (sourceFile.EndsWith(".msb.dcx"))
                 {
                     Console.WriteLine($"Unpacking MSB: {filename}...");
@@ -348,6 +355,17 @@ namespace Yabber
                 {
                     Console.WriteLine($"Repacking FXR3: {filename}...");
                     YFXR3.Repack(sourceFile);
+                }
+                else if (sourceFile.EndsWith(".btab"))
+                {
+                    Console.WriteLine($"Unpacking BTAB: {filename}...");
+                    BTAB btab = BTAB.Read(sourceFile);
+                    btab.Unpack(sourceFile);
+                }
+                else if (sourceFile.EndsWith(".btab.json") || sourceFile.EndsWith(".btab.dcx.json"))
+                {
+                    Console.WriteLine($"Repacking BTAB: {filename}...");
+                    YBTAB.Repack(sourceFile);
                 }
                 else if (sourceFile.EndsWith(".matbin"))
                 {
