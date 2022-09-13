@@ -26,7 +26,7 @@ namespace Yabber
             else
                 throw new InvalidOperationException("Invalid BTAB json filename.");
 
-            YBUtil.Backup(outPath);
+
             YBUtil.JsonDeserialize<BTAB>(File.ReadAllText(sourceFile)).Write(outPath);
         }
     }

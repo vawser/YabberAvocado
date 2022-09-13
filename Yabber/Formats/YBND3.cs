@@ -81,7 +81,7 @@ namespace Yabber
                 YBinder.ReadBinderFiles(bnd, xml.SelectSingleNode("bnd3/files"), sourceDir);
 
             string outPath = $"{targetDir}\\{filename}";
-            YBUtil.Backup(outPath);
+
             bnd.Write(outPath);
         }
     }

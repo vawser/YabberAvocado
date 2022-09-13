@@ -26,7 +26,7 @@ namespace Yabber
             else
                 throw new InvalidOperationException("Invalid MSB1 json filename.");
 
-            YBUtil.Backup(outPath);
+
             YBUtil.JsonDeserialize<MSB1>(File.ReadAllText(sourceFile)).Write(outPath);
         }
     }

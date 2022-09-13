@@ -25,7 +25,7 @@ namespace Yabber
             else
                 throw new InvalidOperationException("Invalid FXR3 xml filename.");
 
-            YBUtil.Backup(outPath);
+
             YBUtil.XmlDeserialize<FXR3>(sourceFile).Write(outPath);
         }
     }

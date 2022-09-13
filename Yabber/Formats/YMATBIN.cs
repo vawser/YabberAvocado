@@ -25,7 +25,7 @@ namespace Yabber
             else
                 throw new InvalidOperationException("Invalid MATBIN xml filename.");
 
-            YBUtil.Backup(outPath);
+
             YBUtil.XmlDeserialize<MATBIN>(sourceFile).Write(outPath);
         }
     }

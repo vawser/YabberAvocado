@@ -56,7 +56,7 @@ namespace Yabber
             }
 
             string outPath = sourceFile.Replace(".fmg.xml", ".fmg");
-            YBUtil.Backup(outPath);
+
             fmg.Write(outPath);
         }
     }

@@ -26,7 +26,7 @@ namespace Yabber
             else
                 throw new InvalidOperationException("Invalid BTL json filename.");
 
-            YBUtil.Backup(outPath);
+
             YBUtil.JsonDeserialize<BTL>(File.ReadAllText(sourceFile)).Write(outPath);
         }
     }

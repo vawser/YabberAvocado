@@ -244,7 +244,7 @@ namespace Yabber
                 outPath = sourceFile.Replace(".fltparam.dcx.xml", ".fltparam.dcx");
             else
                 throw new InvalidOperationException("Invalid GPARAM xml filename.");
-            YBUtil.Backup(outPath);
+
             gparam.Write(outPath);
         }
     }

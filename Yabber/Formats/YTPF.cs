@@ -90,7 +90,7 @@ namespace Yabber
             }
 
             string outPath = $"{targetDir}\\{filename}";
-            YBUtil.Backup(outPath);
+
             tpf.Write(outPath);
         }
     }

@@ -50,7 +50,7 @@ namespace Yabber
             YBinder.ReadBinderFiles(bnd, xml.SelectSingleNode("bnd4/files"), sourceDir);
 
             string outPath = $"{targetDir}\\{filename}";
-            YBUtil.Backup(outPath);
+
             bnd.Write(outPath);
         }
     }

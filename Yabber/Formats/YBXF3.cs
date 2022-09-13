@@ -43,9 +43,7 @@ namespace Yabber
             YBinder.ReadBinderFiles(bxf, xml.SelectSingleNode("bxf3/files"), sourceDir);
 
             string bhdPath = $"{targetDir}\\{bhdFilename}";
-            YBUtil.Backup(bhdPath);
             string bdtPath = $"{targetDir}\\{bdtFilename}";
-            YBUtil.Backup(bdtPath);
             bxf.Write(bhdPath, bdtPath);
         }
     }

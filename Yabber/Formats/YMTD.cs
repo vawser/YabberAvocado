@@ -25,7 +25,7 @@ namespace Yabber
             else
                 throw new InvalidOperationException("Invalid MTD xml filename.");
 
-            YBUtil.Backup(outPath);
+
             YBUtil.XmlDeserialize<MTD>(sourceFile).Write(outPath);
         }
     }

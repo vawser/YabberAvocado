@@ -3,7 +3,6 @@ using System.IO;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using System.Xml;
-using System.Xml.Linq;
 using System.Xml.Serialization;
 
 namespace Yabber
@@ -94,8 +93,40 @@ namespace Yabber
 
         public static void Backup(string path)
         {
-            if (File.Exists(path) && !File.Exists(path + ".bak"))
-                File.Move(path, path + ".bak");
+            if (Directory.Exists(path))
+            {
+                string name = new DirectoryInfo(path).Name;
+                string bakDirPath = "BAK" + Regex.Replace(name, "^[^\\-]+\\-", "-") + "-unpacked";
+                string pathInBakDir = $"{bakDirPath}\\{name}";
+
+                if (!Directory.Exists(bakDirPath)) Directory.CreateDirectory(bakDirPath);
+
+                if (!Directory.Exists(pathInBakDir))
+                {
+                    Directory.Move(path, pathInBakDir);
+                }
+                else
+                {
+                    Directory.Delete(path, true);
+                }
+            }
+            else if (File.Exists(path))
+            {
+                string name = Path.GetFileName(path);
+                string bakDirPath = "BAK" + Regex.Replace(name, "^[^\\.]+\\.", ".").Replace(".", "-");
+                string pathInBakDir = $"{bakDirPath}\\{name}";
+
+                if (!Directory.Exists(bakDirPath)) Directory.CreateDirectory(bakDirPath);
+
+                if (!File.Exists(pathInBakDir))
+                {
+                    File.Move(path, pathInBakDir);
+                }
+                else
+                {
+                    File.Delete(path);
+                }
+            }
         }
 
         public static string JsonSerialize(object obj)
