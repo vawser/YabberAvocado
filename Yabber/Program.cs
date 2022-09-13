@@ -373,7 +373,7 @@ namespace Yabber
                     MATBIN matbin = MATBIN.Read(sourceFile);
                     matbin.Unpack(sourceFile);
                 }
-                else if (sourceFile.EndsWith(".matbin.json"))
+                else if (sourceFile.EndsWith(".matbin.xml"))
                 {
                     Console.WriteLine($"Repacking MATBIN: {filename}...");
                     YMATBIN.Repack(sourceFile);
@@ -384,7 +384,7 @@ namespace Yabber
                     MTD mtd = MTD.Read(sourceFile);
                     mtd.Unpack(sourceFile);
                 }
-                else if (sourceFile.EndsWith(".mtd.json"))
+                else if (sourceFile.EndsWith(".mtd.xml"))
                 {
                     Console.WriteLine($"Repacking MTD: {filename}...");
                     YMTD.Repack(sourceFile);

@@ -5,7 +5,6 @@ using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.IO;
-using Newtonsoft.Json;
 
 namespace Yabber
 {
@@ -13,21 +12,21 @@ namespace Yabber
     {
         public static void Unpack(this MATBIN matbin, string sourceFile)
         {
-            File.WriteAllText($"{sourceFile}.json", YBUtil.JsonSerialize(matbin));
+            YBUtil.XmlSerialize<MATBIN>(matbin, sourceFile);
         }
 
         public static void Repack(string sourceFile)
         {
             string outPath;
-            if (sourceFile.EndsWith(".matbin.json"))
-                outPath = sourceFile.Replace(".matbin.json", ".matbin");
-            else if (sourceFile.EndsWith(".matbin.dcx.json"))
-                outPath = sourceFile.Replace(".matbin.dcx.json", ".matbin.dcx");
+            if (sourceFile.EndsWith(".matbin.xml"))
+                outPath = sourceFile.Replace(".matbin.xml", ".matbin");
+            else if (sourceFile.EndsWith(".matbin.dcx.xml"))
+                outPath = sourceFile.Replace(".matbin.dcx.xml", ".matbin.dcx");
             else
-                throw new InvalidOperationException("Invalid MATBIN json filename.");
+                throw new InvalidOperationException("Invalid MATBIN xml filename.");
 
             YBUtil.Backup(outPath);
-            YBUtil.JsonDeserialize<MATBIN>(File.ReadAllText(sourceFile)).Write(outPath);
+            YBUtil.XmlDeserialize<MATBIN>(sourceFile).Write(outPath);
         }
     }
 }

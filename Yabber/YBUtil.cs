@@ -2,6 +2,9 @@
 using System.IO;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
+using System.Xml;
+using System.Xml.Linq;
+using System.Xml.Serialization;
 
 namespace Yabber
 {
@@ -97,7 +100,7 @@ namespace Yabber
 
         public static string JsonSerialize(object obj)
         {
-            return JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings {
+            return JsonConvert.SerializeObject(obj, Newtonsoft.Json.Formatting.Indented, new JsonSerializerSettings {
                 TypeNameHandling = TypeNameHandling.Auto
             });
         }
@@ -107,6 +110,24 @@ namespace Yabber
             return JsonConvert.DeserializeObject<T>(text, new JsonSerializerSettings {
                 TypeNameHandling = TypeNameHandling.Auto
             });
+        }
+
+        public static void XmlSerialize<T>(object obj, string sourceFile)
+        {
+            var writer = new StreamWriter($"{sourceFile}.xml");
+            var settings = new XmlWriterSettings() { Indent = true };
+            var xw = XmlWriter.Create(writer, settings);
+            var xmlSer = new XmlSerializer(typeof(T));
+
+            xmlSer.Serialize(xw, obj);
+        }
+
+        public static T XmlDeserialize<T>(string sourceFile)
+        {
+            var textReader = new StreamReader(sourceFile);
+            var xmlSer = new XmlSerializer(typeof(T));
+
+            return (T)xmlSer.Deserialize(textReader);
         }
     }
 }

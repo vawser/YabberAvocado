@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Xml;
+using System.Xml.Linq;
+using System.Xml.Serialization;
 
 namespace SoulsFormats
 {
@@ -35,7 +38,7 @@ namespace SoulsFormats
         /// </summary>
         public MTD()
         {
-            ShaderPath = "Unknown.spx";
+            ShaderPath = "";
             Description = "";
             Params = new List<Param>();
             Textures = new List<Texture>();
@@ -152,6 +155,8 @@ namespace SoulsFormats
         /// <summary>
         /// A value defining the material's properties.
         /// </summary>
+        [XmlInclude(typeof(int[]))]
+        [XmlInclude(typeof(float[]))]
         public class Param
         {
             /// <summary>
@@ -162,7 +167,7 @@ namespace SoulsFormats
             /// <summary>
             /// The type of this value.
             /// </summary>
-            public ParamType Type { get; }
+            public ParamType Type { get; set; }
 
             /// <summary>
             /// The value itself.
@@ -172,24 +177,11 @@ namespace SoulsFormats
             /// <summary>
             /// Creates a new Param with the specified values.
             /// </summary>
-            public Param(string name, ParamType type, object value = null)
+            public Param()
             {
-                Name = name;
-                Type = type;
-                Value = value;
-                if (Value == null)
-                {
-                    switch (type)
-                    {
-                        case ParamType.Bool: Value = false; break;
-                        case ParamType.Float: Value = 0f; break;
-                        case ParamType.Float2: Value = new float[2]; break;
-                        case ParamType.Float3: Value = new float[3]; break;
-                        case ParamType.Float4: Value = new float[4]; break;
-                        case ParamType.Int: Value = 0; break;
-                        case ParamType.Int2: Value = new int[2]; break;
-                    }
-                }
+                Name = "";
+                Type = ParamType.Int;
+                Value = 0;
             }
 
             internal Param(BinaryReaderEx br)
@@ -199,6 +191,7 @@ namespace SoulsFormats
                     Name = ReadMarkedString(br, 0xA3);
                     string type = ReadMarkedString(br, 0x04);
                     Type = (ParamType)Enum.Parse(typeof(ParamType), type, true);
+
                     br.AssertInt32(1);
 
                     Block.Read(br, null, 1, null); // Value
@@ -220,6 +213,7 @@ namespace SoulsFormats
                         else if (Type == ParamType.Float4)
                             Value = br.ReadSingles(4);
                     }
+
                     AssertMarker(br, 0x04);
                     br.AssertInt32(0);
                 }
@@ -264,14 +258,14 @@ namespace SoulsFormats
                             valueCount = 4;
                         bw.WriteInt32(valueCount);
 
-                        if (Type == ParamType.Int)
-                            bw.WriteInt32((int)(long)Value);
+                        if (Type == ParamType.Bool)
+                            bw.WriteBoolean((bool)Value);
+                        else if (Type == ParamType.Int)
+                            bw.WriteInt32((int)Value);
                         else if (Type == ParamType.Int2)
                             bw.WriteInt32s((int[])Value);
-                        else if (Type == ParamType.Bool)
-                            bw.WriteBoolean((bool)Value);
                         else if (Type == ParamType.Float)
-                            bw.WriteSingle((float)(double)Value);
+                            bw.WriteSingle((float)Value);
                         else if (Type == ParamType.Float2)
                             bw.WriteSingles((float[])Value);
                         else if (Type == ParamType.Float3)
