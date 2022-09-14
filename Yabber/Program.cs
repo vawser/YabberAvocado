@@ -125,7 +125,6 @@ namespace Yabber
             if (File.Exists(targetDir))
                 targetDir += "-ybr";
 
-            string inputFile = sourceFile;
             bool isDCX = DCX.Is(sourceFile);
             DCX.Type compression = DCX.Type.Unknown;
 
@@ -133,35 +132,33 @@ namespace Yabber
             {
                 Console.WriteLine($"Decompressing DCX: {filename}...");
 
-                if (sourceFile.EndsWith(".dcx"))
-                    inputFile = $"{sourceDir}\\{Path.GetFileNameWithoutExtension(sourceFile)}";
-                else
-                    inputFile = $"{sourceDir}\\{sourceFile}.undcx";
 
                 byte[] bytes = DCX.Decompress(sourceFile, out DCX.Type compr);
                 compression = compr;
-                File.WriteAllBytes(inputFile, bytes);
+
+                File.Move(sourceFile, $"{sourceFile}.temp");
+                File.WriteAllBytes(sourceFile, bytes);
             }
 
-            if (BND3.Is(inputFile))
+            if (BND3.Is(sourceFile))
             {
                 Console.WriteLine($"Unpacking BND3: {filename}...");
-                using (var bnd = new BND3Reader(inputFile))
+                using (var bnd = new BND3Reader(sourceFile))
                 {
                     if (isDCX) bnd.Compression = compression;
                     bnd.Unpack(filename, targetDir, progress);
                 }
             }
-            else if (BND4.Is(inputFile))
+            else if (BND4.Is(sourceFile))
             {
                 Console.WriteLine($"Unpacking BND4: {filename}...");
-                using (var bnd = new BND4Reader(inputFile))
+                using (var bnd = new BND4Reader(sourceFile))
                 {
                     if (isDCX) bnd.Compression = compression;
                     bnd.Unpack(filename, targetDir, progress);
                 }
             }
-            else if (BXF3.IsBHD(inputFile))
+            else if (BXF3.IsBHD(sourceFile))
             {
                 string bdtExtension = Path.GetExtension(filename).Replace("bhd", "bdt");
                 string bdtFilename = $"{Path.GetFileNameWithoutExtension(filename)}{bdtExtension}";
@@ -169,7 +166,7 @@ namespace Yabber
                 if (File.Exists(bdtPath))
                 {
                     Console.WriteLine($"Unpacking BXF3: {filename}...");
-                    using (var bxf = new BXF3Reader(inputFile, bdtPath))
+                    using (var bxf = new BXF3Reader(sourceFile, bdtPath))
                     {
                         bxf.Unpack(filename, bdtFilename, targetDir, progress);
                     }
@@ -181,7 +178,7 @@ namespace Yabber
                     return true;
                 }
             }
-            else if (BXF4.IsBHD(inputFile))
+            else if (BXF4.IsBHD(sourceFile))
             {
                 string bdtExtension = Path.GetExtension(filename).Replace("bhd", "bdt");
                 string bdtFilename = $"{Path.GetFileNameWithoutExtension(filename)}{bdtExtension}";
@@ -189,7 +186,7 @@ namespace Yabber
                 if (File.Exists(bdtPath))
                 {
                     Console.WriteLine($"Unpacking BXF4: {filename}...");
-                    using (var bxf = new BXF4Reader(inputFile, bdtPath))
+                    using (var bxf = new BXF4Reader(sourceFile, bdtPath))
                     {
                         bxf.Unpack(filename, bdtFilename, targetDir, progress);
                     }
@@ -201,137 +198,137 @@ namespace Yabber
                     return true;
                 }
             }
-            else if (FFXDLSE.Is(inputFile))
+            else if (FFXDLSE.Is(sourceFile))
             {
                 Console.WriteLine($"Unpacking FFX: {filename}...");
-                var ffx = FFXDLSE.Read(inputFile);
+                var ffx = FFXDLSE.Read(sourceFile);
                 if (isDCX) ffx.Compression = compression;
-                ffx.Unpack(inputFile);
+                ffx.Unpack(sourceFile);
             }
-            else if (inputFile.EndsWith(".ffx.xml") || inputFile.EndsWith(".ffx.dcx.xml"))
+            else if (sourceFile.EndsWith(".ffx.xml") || sourceFile.EndsWith(".ffx.dcx.xml"))
             {
                 Console.WriteLine($"Repacking FFX: {filename}...");
-                YFFX.Repack(inputFile);
+                YFFX.Repack(sourceFile);
             }
-            else if (inputFile.EndsWith(".fmg"))
+            else if (sourceFile.EndsWith(".fmg") || sourceFile.EndsWith(".fmg.dcx"))
             {
                 Console.WriteLine($"Unpacking FMG: {filename}...");
-                FMG fmg = FMG.Read(inputFile);
+                FMG fmg = FMG.Read(sourceFile);
                 if (isDCX) fmg.Compression = compression;
-                fmg.Unpack(inputFile);
+                fmg.Unpack(sourceFile);
             }
-            else if (inputFile.EndsWith(".fmg.xml") || inputFile.EndsWith(".fmg.dcx.xml"))
+            else if (sourceFile.EndsWith(".fmg.xml") || sourceFile.EndsWith(".fmg.dcx.xml"))
             {
                 Console.WriteLine($"Repacking FMG: {filename}...");
-                YFMG.Repack(inputFile);
+                YFMG.Repack(sourceFile);
             }
-            else if (GPARAM.Is(inputFile))
+            else if (GPARAM.Is(sourceFile))
             {
                 Console.WriteLine($"Unpacking GPARAM: {filename}...");
-                GPARAM gparam = GPARAM.Read(inputFile);
+                GPARAM gparam = GPARAM.Read(sourceFile);
                 if (isDCX) gparam.Compression = compression;
-                gparam.Unpack(inputFile);
+                gparam.Unpack(sourceFile);
             }
-            else if (inputFile.EndsWith(".gparam.xml") || inputFile.EndsWith(".gparam.dcx.xml")
-                    || inputFile.EndsWith(".fltparam.xml") || inputFile.EndsWith(".fltparam.dcx.xml"))
+            else if (sourceFile.EndsWith(".gparam.xml") || sourceFile.EndsWith(".gparam.dcx.xml")
+                    || sourceFile.EndsWith(".fltparam.xml") || sourceFile.EndsWith(".fltparam.dcx.xml"))
             {
                 Console.WriteLine($"Repacking GPARAM: {filename}...");
-                YGPARAM.Repack(inputFile);
+                YGPARAM.Repack(sourceFile);
             }
-            else if (FXR3.Is(inputFile))
+            else if (FXR3.Is(sourceFile))
             {
                 Console.WriteLine($"Unpacking FXR3: {filename}...");
-                FXR3 fxr = FXR3.Read(inputFile);
+                FXR3 fxr = FXR3.Read(sourceFile);
                 if (isDCX) fxr.Compression = compression;
-                fxr.Unpack(inputFile);
+                fxr.Unpack(sourceFile);
             }
-            else if (inputFile.EndsWith(".fxr.xml") || inputFile.EndsWith(".fxr.dcx.xml"))
+            else if (sourceFile.EndsWith(".fxr.xml") || sourceFile.EndsWith(".fxr.dcx.xml"))
             {
                 Console.WriteLine($"Repacking FXR3: {filename}...");
-                YFXR3.Repack(inputFile);
+                YFXR3.Repack(sourceFile);
             }
-            else if (inputFile.EndsWith(".btab"))
+            else if (sourceFile.EndsWith(".btab") || sourceFile.EndsWith(".btab.dcx"))
             {
                 Console.WriteLine($"Unpacking BTAB: {filename}...");
-                BTAB btab = BTAB.Read(inputFile);
+                BTAB btab = BTAB.Read(sourceFile);
                 if (isDCX) btab.Compression = compression;
-                btab.Unpack(inputFile);
+                btab.Unpack(sourceFile);
             }
-            else if (inputFile.EndsWith(".btab.json") || inputFile.EndsWith(".btab.dcx.json"))
+            else if (sourceFile.EndsWith(".btab.json") || sourceFile.EndsWith(".btab.dcx.json"))
             {
                 Console.WriteLine($"Repacking BTAB: {filename}...");
-                YBTAB.Repack(inputFile);
+                YBTAB.Repack(sourceFile);
             }
-            else if (inputFile.EndsWith(".matbin"))
+            else if (sourceFile.EndsWith(".matbin"))
             {
                 Console.WriteLine($"Unpacking MATBIN: {filename}...");
-                MATBIN matbin = MATBIN.Read(inputFile);
+                MATBIN matbin = MATBIN.Read(sourceFile);
                 if (isDCX) matbin.Compression = compression;
-                matbin.Unpack(inputFile);
+                matbin.Unpack(sourceFile);
             }
-            else if (inputFile.EndsWith(".matbin.xml"))
+            else if (sourceFile.EndsWith(".matbin.xml"))
             {
                 Console.WriteLine($"Repacking MATBIN: {filename}...");
-                YMATBIN.Repack(inputFile);
+                YMATBIN.Repack(sourceFile);
             }
-            else if (inputFile.EndsWith(".mtd"))
+            else if (sourceFile.EndsWith(".mtd"))
             {
                 Console.WriteLine($"Unpacking MTD: {filename}...");
-                MTD mtd = MTD.Read(inputFile);
+                MTD mtd = MTD.Read(sourceFile);
                 if (isDCX) mtd.Compression = compression;
-                mtd.Unpack(inputFile);
+                mtd.Unpack(sourceFile);
             }
-            else if (inputFile.EndsWith(".mtd.xml"))
+            else if (sourceFile.EndsWith(".mtd.xml"))
             {
                 Console.WriteLine($"Repacking MTD: {filename}...");
-                YMTD.Repack(inputFile);
+                YMTD.Repack(sourceFile);
             }
-            else if (inputFile.EndsWith(".msb"))
+            else if (sourceFile.EndsWith(".msb") || sourceFile.EndsWith(".msb.dcx"))
             {
 
                 Console.WriteLine($"Unpacking MSB: {filename}...");
 
                 if (File.Exists($"{sourceDir}\\_er"))
                 {
-                    var msb = MSBE.Read(inputFile);
+                    var msb = MSBE.Read(sourceFile);
                     if (isDCX) msb.Compression = compression;
-                    msb.Unpack(inputFile);
+                    msb.Unpack(sourceFile);
                 }
                 else if (File.Exists($"{sourceDir}\\_sekiro"))
                 {
-                    var msb = MSBS.Read(inputFile);
+                    var msb = MSBS.Read(sourceFile);
                     if (isDCX) msb.Compression = compression;
-                    msb.Unpack(inputFile);
+                    msb.Unpack(sourceFile);
                 }
                 else if (File.Exists($"{sourceDir}\\_bb"))
                 {
-                    var msb = MSBB.Read(inputFile);
+                    var msb = MSBB.Read(sourceFile);
                     if (isDCX) msb.Compression = compression;
-                    msb.Unpack(inputFile);
+                    msb.Unpack(sourceFile);
                 }
                 else if (File.Exists($"{sourceDir}\\_des"))
                 {
-                    var msb = MSBD.Read(inputFile);
+                    var msb = MSBD.Read(sourceFile);
                     if (isDCX) msb.Compression = compression;
-                    msb.Unpack(inputFile);
+                    msb.Unpack(sourceFile);
                 }
                 else if (File.Exists($"{sourceDir}\\_ds3"))
                 {
-                    var msb = MSB3.Read(inputFile);
+                    var msb = MSB3.Read(sourceFile);
                     if (isDCX) msb.Compression = compression;
-                    msb.Unpack(inputFile);
+                    msb.Unpack(sourceFile);
                 }
                 else if (File.Exists($"{sourceDir}\\_ds2"))
                 {
-                    var msb = MSB2.Read(inputFile);
+                    var msb = MSB2.Read(sourceFile);
                     if (isDCX) msb.Compression = compression;
-                    msb.Unpack(inputFile);
+                    msb.Unpack(sourceFile);
                 }
                 else if (File.Exists($"{sourceDir}\\_ds1"))
                 {
-                    var msb = MSB1.Read(inputFile);
+                    var msb = MSB1.Read(sourceFile);
                     if (isDCX) msb.Compression = compression;
-                    msb.Unpack(inputFile);
+                    msb.Unpack(sourceFile);
                 }
                 else
                 {
@@ -340,37 +337,37 @@ namespace Yabber
                     return true;
                 }
             }
-            else if (inputFile.EndsWith(".msb.json") || inputFile.EndsWith(".msb.dcx.json"))
+            else if (sourceFile.EndsWith(".msb.json") || sourceFile.EndsWith(".msb.dcx.json"))
             {
                 Console.WriteLine($"Repacking MSB: {filename}...");
 
                 if (File.Exists($"{sourceDir}\\_er"))
                 {
-                    YMSBE.Repack(inputFile);
+                    YMSBE.Repack(sourceFile);
                 }
                 else if (File.Exists($"{sourceDir}\\_sekiro"))
                 {
-                    YMSBS.Repack(inputFile);
+                    YMSBS.Repack(sourceFile);
                 }
                 else if (File.Exists($"{sourceDir}\\_bb"))
                 {
-                    YMSBB.Repack(inputFile);
+                    YMSBB.Repack(sourceFile);
                 }
                 else if (File.Exists($"{sourceDir}\\_des"))
                 {
-                    YMSBD.Repack(inputFile);
+                    YMSBD.Repack(sourceFile);
                 }
                 else if (File.Exists($"{sourceDir}\\_ds3"))
                 {
-                    YMSB3.Repack(inputFile);
+                    YMSB3.Repack(sourceFile);
                 }
                 else if (File.Exists($"{sourceDir}\\_ds2"))
                 {
-                    YMSB2.Repack(inputFile);
+                    YMSB2.Repack(sourceFile);
                 }
                 else if (File.Exists($"{sourceDir}\\_ds1"))
                 {
-                    YMSB1.Repack(inputFile);
+                    YMSB1.Repack(sourceFile);
                 }
                 else
                 {
@@ -379,53 +376,53 @@ namespace Yabber
                     return true;
                 }
             }
-            else if (inputFile.EndsWith(".btl"))
+            else if (sourceFile.EndsWith(".btl") || sourceFile.EndsWith(".btl.dcx"))
             {
                 Console.WriteLine($"Unpacking BTL: {filename}...");
-                BTL btl = BTL.Read(inputFile);
+                BTL btl = BTL.Read(sourceFile);
                 if (isDCX) btl.Compression = compression;
-                btl.Unpack(inputFile);
+                btl.Unpack(sourceFile);
             }
-            else if (inputFile.EndsWith(".btl.json") || inputFile.EndsWith(".btl.dcx.json"))
+            else if (sourceFile.EndsWith(".btl.json") || sourceFile.EndsWith(".btl.dcx.json"))
             {
                 Console.WriteLine($"Repacking BTL: {filename}...");
-                YBTL.Repack(inputFile);
+                YBTL.Repack(sourceFile);
             }
-            else if (inputFile.EndsWith(".luagnl"))
+            else if (sourceFile.EndsWith(".luagnl"))
             {
                 Console.WriteLine($"Unpacking LUAGNL: {filename}...");
-                LUAGNL gnl = LUAGNL.Read(inputFile);
+                LUAGNL gnl = LUAGNL.Read(sourceFile);
                 if (isDCX) gnl.Compression = compression;
-                gnl.Unpack(inputFile);
+                gnl.Unpack(sourceFile);
             }
-            else if (inputFile.EndsWith(".luagnl.xml"))
+            else if (sourceFile.EndsWith(".luagnl.xml"))
             {
                 Console.WriteLine($"Repacking LUAGNL: {filename}...");
-                YLUAGNL.Repack(inputFile);
+                YLUAGNL.Repack(sourceFile);
             }
-            else if (LUAINFO.Is(inputFile))
+            else if (LUAINFO.Is(sourceFile))
             {
                 Console.WriteLine($"Unpacking LUAINFO: {filename}...");
-                LUAINFO info = LUAINFO.Read(inputFile);
+                LUAINFO info = LUAINFO.Read(sourceFile);
                 if (isDCX) info.Compression = compression;
-                info.Unpack(inputFile);
+                info.Unpack(sourceFile);
             }
-            else if (inputFile.EndsWith(".luainfo.xml"))
+            else if (sourceFile.EndsWith(".luainfo.xml"))
             {
                 Console.WriteLine($"Repacking LUAINFO: {filename}...");
-                YLUAINFO.Repack(inputFile);
+                YLUAINFO.Repack(sourceFile);
             }
-            else if (TPF.Is(inputFile))
+            else if (TPF.Is(sourceFile))
             {
                 Console.WriteLine($"Unpacking TPF: {filename}...");
-                TPF tpf = TPF.Read(inputFile);
+                TPF tpf = TPF.Read(sourceFile);
                 if (isDCX) tpf.Compression = compression;
                 tpf.Unpack(filename, targetDir, progress);
             }
-            else if (Zero3.Is(inputFile))
+            else if (Zero3.Is(sourceFile))
             {
                 Console.WriteLine($"Unpacking 000: {filename}...");
-                Zero3 z3 = Zero3.Read(inputFile);
+                Zero3 z3 = Zero3.Read(sourceFile);
                 z3.Unpack(targetDir);
             }
             else
@@ -434,7 +431,12 @@ namespace Yabber
                 return true;
             }
 
-            if (isDCX) File.Delete(inputFile);
+            if (isDCX)
+            {
+                File.Delete(sourceFile);
+                File.Move($"{sourceFile}.temp", sourceFile);
+            }
+
             YBUtil.Backup(sourceFile);
 
             return false;

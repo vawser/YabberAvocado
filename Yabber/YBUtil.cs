@@ -93,6 +93,7 @@ namespace Yabber
 
         public static void Backup(string path)
         {
+
             if (Directory.Exists(path))
             {
                 string name = new DirectoryInfo(path).Name;
@@ -101,14 +102,9 @@ namespace Yabber
 
                 if (!Directory.Exists(bakDirPath)) Directory.CreateDirectory(bakDirPath);
 
-                if (!Directory.Exists(pathInBakDir))
-                {
-                    Directory.Move(path, pathInBakDir);
-                }
-                else
-                {
-                    Directory.Delete(path, true);
-                }
+                if (Directory.Exists(pathInBakDir)) Directory.Delete(pathInBakDir, true);
+
+                Directory.Move(path, pathInBakDir);
             }
             else if (File.Exists(path))
             {
@@ -118,14 +114,9 @@ namespace Yabber
 
                 if (!Directory.Exists(bakDirPath)) Directory.CreateDirectory(bakDirPath);
 
-                if (!File.Exists(pathInBakDir))
-                {
-                    File.Move(path, pathInBakDir);
-                }
-                else
-                {
-                    File.Delete(path);
-                }
+                if (File.Exists(pathInBakDir)) File.Delete(pathInBakDir);
+
+                File.Move(path, pathInBakDir);
             }
         }
 
