@@ -9,27 +9,29 @@ namespace Yabber
         {
             XmlWriterSettings xws = new XmlWriterSettings();
             xws.Indent = true;
-            XmlWriter xw = XmlWriter.Create($"{sourceFile}.xml", xws);
-            xw.WriteStartElement("luainfo");
-            xw.WriteElementString("bigendian", info.BigEndian.ToString());
-            xw.WriteElementString("longformat", info.LongFormat.ToString());
-            xw.WriteStartElement("goals");
-
-            foreach (LUAINFO.Goal goal in info.Goals)
+            using (XmlWriter xw = XmlWriter.Create($"{sourceFile}.xml", xws))
             {
-                xw.WriteStartElement("goal");
-                xw.WriteAttributeString("id", goal.ID.ToString());
-                xw.WriteElementString("name", goal.Name);
-                xw.WriteElementString("battleinterrupt", goal.BattleInterrupt.ToString());
-                xw.WriteElementString("logicinterrupt", goal.LogicInterrupt.ToString());
-                if (goal.LogicInterruptName != null)
-                    xw.WriteElementString("logicinterruptname", goal.LogicInterruptName);
-                xw.WriteEndElement();
-            }
+                xw.WriteStartElement("luainfo");
+                xw.WriteElementString("bigendian", info.BigEndian.ToString());
+                xw.WriteElementString("longformat", info.LongFormat.ToString());
+                xw.WriteStartElement("goals");
 
-            xw.WriteEndElement();
-            xw.WriteEndElement();
-            xw.Close();
+                foreach (LUAINFO.Goal goal in info.Goals)
+                {
+                    xw.WriteStartElement("goal");
+                    xw.WriteAttributeString("id", goal.ID.ToString());
+                    xw.WriteElementString("name", goal.Name);
+                    xw.WriteElementString("battleinterrupt", goal.BattleInterrupt.ToString());
+                    xw.WriteElementString("logicinterrupt", goal.LogicInterrupt.ToString());
+                    if (goal.LogicInterruptName != null)
+                        xw.WriteElementString("logicinterruptname", goal.LogicInterruptName);
+                    xw.WriteEndElement();
+                }
+
+                xw.WriteEndElement();
+                xw.WriteEndElement();
+                xw.Close();
+            }
         }
 
         public static void Repack(string sourceFile)

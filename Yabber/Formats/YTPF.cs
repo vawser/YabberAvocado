@@ -17,42 +17,45 @@ namespace Yabber
             Directory.CreateDirectory(targetDir);
             var xws = new XmlWriterSettings();
             xws.Indent = true;
-            var xw = XmlWriter.Create($"{targetDir}\\_yabber-tpf.xml", xws);
-            xw.WriteStartElement("tpf");
 
-            xw.WriteElementString("filename", sourceName);
-            xw.WriteElementString("compression", tpf.Compression.ToString());
-            xw.WriteElementString("encoding", $"0x{tpf.Encoding:X2}");
-            xw.WriteElementString("flag2", $"0x{tpf.Flag2:X2}");
-
-            xw.WriteStartElement("textures");
-            for (int i = 0; i < tpf.Textures.Count; i++)
+            using (var xw = XmlWriter.Create($"{targetDir}\\_yabber-tpf.xml", xws))
             {
-                TPF.Texture texture = tpf.Textures[i];
-                xw.WriteStartElement("texture");
-                xw.WriteElementString("name", texture.Name + ".dds");
-                xw.WriteElementString("format", texture.Format.ToString());
-                xw.WriteElementString("flags1", $"0x{texture.Flags1:X2}");
+                xw.WriteStartElement("tpf");
 
-                if (texture.FloatStruct != null)
+                xw.WriteElementString("filename", sourceName);
+                xw.WriteElementString("compression", tpf.Compression.ToString());
+                xw.WriteElementString("encoding", $"0x{tpf.Encoding:X2}");
+                xw.WriteElementString("flag2", $"0x{tpf.Flag2:X2}");
+
+                xw.WriteStartElement("textures");
+                for (int i = 0; i < tpf.Textures.Count; i++)
                 {
-                    xw.WriteStartElement("FloatStruct");
-                    xw.WriteAttributeString("Unk00", texture.FloatStruct.Unk00.ToString());
-                    foreach (float value in texture.FloatStruct.Values)
+                    TPF.Texture texture = tpf.Textures[i];
+                    xw.WriteStartElement("texture");
+                    xw.WriteElementString("name", texture.Name + ".dds");
+                    xw.WriteElementString("format", texture.Format.ToString());
+                    xw.WriteElementString("flags1", $"0x{texture.Flags1:X2}");
+
+                    if (texture.FloatStruct != null)
                     {
-                        xw.WriteElementString("Value", value.ToString());
+                        xw.WriteStartElement("FloatStruct");
+                        xw.WriteAttributeString("Unk00", texture.FloatStruct.Unk00.ToString());
+                        foreach (float value in texture.FloatStruct.Values)
+                        {
+                            xw.WriteElementString("Value", value.ToString());
+                        }
+                        xw.WriteEndElement();
                     }
                     xw.WriteEndElement();
+
+                    File.WriteAllBytes($"{targetDir}\\{texture.Name}.dds", texture.Headerize());
+                    progress.Report((float)i / tpf.Textures.Count);
                 }
                 xw.WriteEndElement();
 
-                File.WriteAllBytes($"{targetDir}\\{texture.Name}.dds", texture.Headerize());
-                progress.Report((float)i / tpf.Textures.Count);
+                xw.WriteEndElement();
+                xw.Close();
             }
-            xw.WriteEndElement();
-
-            xw.WriteEndElement();
-            xw.Close();
         }
 
         public static void Repack(string sourceDir, string targetDir)

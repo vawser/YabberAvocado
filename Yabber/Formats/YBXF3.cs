@@ -12,19 +12,22 @@ namespace Yabber
             Directory.CreateDirectory(targetDir);
             var xws = new XmlWriterSettings();
             xws.Indent = true;
-            var xw = XmlWriter.Create($"{targetDir}\\_yabber-bxf3.xml", xws);
-            xw.WriteStartElement("bxf3");
 
-            xw.WriteElementString("bhd_filename", bhdName);
-            xw.WriteElementString("bdt_filename", bdtName);
-            xw.WriteElementString("version", bxf.Version);
-            xw.WriteElementString("format", bxf.Format.ToString());
-            xw.WriteElementString("bigendian", bxf.BigEndian.ToString());
-            xw.WriteElementString("bitbigendian", bxf.BitBigEndian.ToString());
+            using (var xw = XmlWriter.Create($"{targetDir}\\_yabber-bxf3.xml", xws))
+            {
+                xw.WriteStartElement("bxf3");
 
-            YBinder.WriteBinderFiles(bxf, xw, targetDir, progress);
-            xw.WriteEndElement();
-            xw.Close();
+                xw.WriteElementString("bhd_filename", bhdName);
+                xw.WriteElementString("bdt_filename", bdtName);
+                xw.WriteElementString("version", bxf.Version);
+                xw.WriteElementString("format", bxf.Format.ToString());
+                xw.WriteElementString("bigendian", bxf.BigEndian.ToString());
+                xw.WriteElementString("bitbigendian", bxf.BitBigEndian.ToString());
+
+                YBinder.WriteBinderFiles(bxf, xw, targetDir, progress);
+                xw.WriteEndElement();
+                xw.Close();
+            }
         }
 
         public static void Repack(string sourceDir, string targetDir)

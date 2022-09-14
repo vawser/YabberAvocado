@@ -113,7 +113,7 @@ namespace Yabber
             else if (File.Exists(path))
             {
                 string name = Path.GetFileName(path);
-                string bakDirPath = new DirectoryInfo(path).Parent.FullName + "\\BAK" + Regex.Replace(name, "^[^\\.]+\\.", ".").Replace(".", "-");
+                string bakDirPath = new DirectoryInfo(path).Parent.FullName + "\\BAK" + Regex.Replace(Regex.Replace(name, "bdt$", "bhd"), "^[^\\.]+\\.", ".").Replace(".", "-");
                 string pathInBakDir = $"{bakDirPath}\\{name}";
 
                 if (!Directory.Exists(bakDirPath)) Directory.CreateDirectory(bakDirPath);

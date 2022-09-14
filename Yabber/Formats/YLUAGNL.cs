@@ -9,20 +9,23 @@ namespace Yabber
         {
             XmlWriterSettings xws = new XmlWriterSettings();
             xws.Indent = true;
-            XmlWriter xw = XmlWriter.Create($"{sourceFile}.xml", xws);
-            xw.WriteStartElement("luagnl");
-            xw.WriteElementString("bigendian", gnl.BigEndian.ToString());
-            xw.WriteElementString("longformat", gnl.LongFormat.ToString());
-            xw.WriteStartElement("globals");
 
-            foreach (string global in gnl.Globals)
+            using (XmlWriter xw = XmlWriter.Create($"{sourceFile}.xml", xws))
             {
-                xw.WriteElementString("global", global);
-            }
+                xw.WriteStartElement("luagnl");
+                xw.WriteElementString("bigendian", gnl.BigEndian.ToString());
+                xw.WriteElementString("longformat", gnl.LongFormat.ToString());
+                xw.WriteStartElement("globals");
 
-            xw.WriteEndElement();
-            xw.WriteEndElement();
-            xw.Close();
+                foreach (string global in gnl.Globals)
+                {
+                    xw.WriteElementString("global", global);
+                }
+
+                xw.WriteEndElement();
+                xw.WriteEndElement();
+                xw.Close();
+            }
         }
 
         public static void Repack(string sourceFile)

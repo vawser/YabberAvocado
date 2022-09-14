@@ -12,20 +12,23 @@ namespace Yabber
             Directory.CreateDirectory(targetDir);
             var xws = new XmlWriterSettings();
             xws.Indent = true;
-            var xw = XmlWriter.Create($"{targetDir}\\_yabber-bnd3.xml", xws);
-            xw.WriteStartElement("bnd3");
 
-            xw.WriteElementString("filename", sourceName);
-            xw.WriteElementString("compression", bnd.Compression.ToString());
-            xw.WriteElementString("version", bnd.Version);
-            xw.WriteElementString("format", bnd.Format.ToString());
-            xw.WriteElementString("bigendian", bnd.BigEndian.ToString());
-            xw.WriteElementString("bitbigendian", bnd.BitBigEndian.ToString());
-            xw.WriteElementString("unk18", $"0x{bnd.Unk18:X}");
-            YBinder.WriteBinderFiles(bnd, xw, targetDir, progress);
+            using (var xw = XmlWriter.Create($"{targetDir}\\_yabber-bnd3.xml", xws))
+            {
+                xw.WriteStartElement("bnd3");
 
-            xw.WriteEndElement();
-            xw.Close();
+                xw.WriteElementString("filename", sourceName);
+                xw.WriteElementString("compression", bnd.Compression.ToString());
+                xw.WriteElementString("version", bnd.Version);
+                xw.WriteElementString("format", bnd.Format.ToString());
+                xw.WriteElementString("bigendian", bnd.BigEndian.ToString());
+                xw.WriteElementString("bitbigendian", bnd.BitBigEndian.ToString());
+                xw.WriteElementString("unk18", $"0x{bnd.Unk18:X}");
+                YBinder.WriteBinderFiles(bnd, xw, targetDir, progress);
+
+                xw.WriteEndElement();
+                xw.Close();
+            }
         }
 
         public static void Repack(string sourceDir, string targetDir)

@@ -12,22 +12,25 @@ namespace Yabber
             Directory.CreateDirectory(targetDir);
             var xws = new XmlWriterSettings();
             xws.Indent = true;
-            var xw = XmlWriter.Create($"{targetDir}\\_yabber-bnd4.xml", xws);
-            xw.WriteStartElement("bnd4");
 
-            xw.WriteElementString("filename", sourceName);
-            xw.WriteElementString("compression", bnd.Compression.ToString());
-            xw.WriteElementString("version", bnd.Version);
-            xw.WriteElementString("format", bnd.Format.ToString());
-            xw.WriteElementString("bigendian", bnd.BigEndian.ToString());
-            xw.WriteElementString("bitbigendian", bnd.BitBigEndian.ToString());
-            xw.WriteElementString("unicode", bnd.Unicode.ToString());
-            xw.WriteElementString("extended", $"0x{bnd.Extended:X2}");
-            xw.WriteElementString("unk04", bnd.Unk04.ToString());
-            xw.WriteElementString("unk05", bnd.Unk05.ToString());
-            YBinder.WriteBinderFiles(bnd, xw, targetDir, progress);
-            xw.WriteEndElement();
-            xw.Close();
+            using (var xw = XmlWriter.Create($"{targetDir}\\_yabber-bnd4.xml", xws))
+            {
+                xw.WriteStartElement("bnd4");
+
+                xw.WriteElementString("filename", sourceName);
+                xw.WriteElementString("compression", bnd.Compression.ToString());
+                xw.WriteElementString("version", bnd.Version);
+                xw.WriteElementString("format", bnd.Format.ToString());
+                xw.WriteElementString("bigendian", bnd.BigEndian.ToString());
+                xw.WriteElementString("bitbigendian", bnd.BitBigEndian.ToString());
+                xw.WriteElementString("unicode", bnd.Unicode.ToString());
+                xw.WriteElementString("extended", $"0x{bnd.Extended:X2}");
+                xw.WriteElementString("unk04", bnd.Unk04.ToString());
+                xw.WriteElementString("unk05", bnd.Unk05.ToString());
+                YBinder.WriteBinderFiles(bnd, xw, targetDir, progress);
+                xw.WriteEndElement();
+                xw.Close();
+            }
         }
 
         public static void Repack(string sourceDir, string targetDir)

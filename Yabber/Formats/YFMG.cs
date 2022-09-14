@@ -13,26 +13,29 @@ namespace Yabber
             xws.Indent = true;
             // But don't actually indent so there's more room for the text
             xws.IndentChars = "";
-            XmlWriter xw = XmlWriter.Create($"{sourceFile}.xml", xws);
-            xw.WriteStartElement("fmg");
-            xw.WriteElementString("compression", fmg.Compression.ToString());
-            xw.WriteElementString("version", fmg.Version.ToString());
-            xw.WriteElementString("bigendian", fmg.BigEndian.ToString());
-            xw.WriteStartElement("entries");
 
-            // I think they're sorted already, but whatever
-            fmg.Entries.Sort((e1, e2) => e1.ID.CompareTo(e2.ID));
-            foreach (FMG.Entry entry in fmg.Entries)
+            using (XmlWriter xw = XmlWriter.Create($"{sourceFile}.xml", xws))
             {
-                xw.WriteStartElement("text");
-                xw.WriteAttributeString("id", entry.ID.ToString());
-                xw.WriteString(entry.Text ?? "%null%");
-                xw.WriteEndElement();
-            }
+                xw.WriteStartElement("fmg");
+                xw.WriteElementString("compression", fmg.Compression.ToString());
+                xw.WriteElementString("version", fmg.Version.ToString());
+                xw.WriteElementString("bigendian", fmg.BigEndian.ToString());
+                xw.WriteStartElement("entries");
 
-            xw.WriteEndElement();
-            xw.WriteEndElement();
-            xw.Close();
+                // I think they're sorted already, but whatever
+                fmg.Entries.Sort((e1, e2) => e1.ID.CompareTo(e2.ID));
+                foreach (FMG.Entry entry in fmg.Entries)
+                {
+                    xw.WriteStartElement("text");
+                    xw.WriteAttributeString("id", entry.ID.ToString());
+                    xw.WriteString(entry.Text ?? "%null%");
+                    xw.WriteEndElement();
+                }
+
+                xw.WriteEndElement();
+                xw.WriteEndElement();
+                xw.Close();
+            }
         }
 
         public static void Repack(string sourceFile)

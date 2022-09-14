@@ -12,23 +12,26 @@ namespace Yabber
             Directory.CreateDirectory(targetDir);
             var xws = new XmlWriterSettings();
             xws.Indent = true;
-            var xw = XmlWriter.Create($"{targetDir}\\_yabber-bxf4.xml", xws);
-            xw.WriteStartElement("bxf4");
 
-            xw.WriteElementString("bhd_filename", bhdName);
-            xw.WriteElementString("bdt_filename", bdtName);
-            xw.WriteElementString("version", bxf.Version);
-            xw.WriteElementString("format", bxf.Format.ToString());
-            xw.WriteElementString("bigendian", bxf.BigEndian.ToString());
-            xw.WriteElementString("bitbigendian", bxf.BitBigEndian.ToString());
-            xw.WriteElementString("unicode", bxf.Unicode.ToString());
-            xw.WriteElementString("extended", $"0x{bxf.Extended:X2}");
-            xw.WriteElementString("unk04", bxf.Unk04.ToString());
-            xw.WriteElementString("unk05", bxf.Unk05.ToString());
+            using (var xw = XmlWriter.Create($"{targetDir}\\_yabber-bxf4.xml", xws))
+            {
+                xw.WriteStartElement("bxf4");
 
-            YBinder.WriteBinderFiles(bxf, xw, targetDir, progress);
-            xw.WriteEndElement();
-            xw.Close();
+                xw.WriteElementString("bhd_filename", bhdName);
+                xw.WriteElementString("bdt_filename", bdtName);
+                xw.WriteElementString("version", bxf.Version);
+                xw.WriteElementString("format", bxf.Format.ToString());
+                xw.WriteElementString("bigendian", bxf.BigEndian.ToString());
+                xw.WriteElementString("bitbigendian", bxf.BitBigEndian.ToString());
+                xw.WriteElementString("unicode", bxf.Unicode.ToString());
+                xw.WriteElementString("extended", $"0x{bxf.Extended:X2}");
+                xw.WriteElementString("unk04", bxf.Unk04.ToString());
+                xw.WriteElementString("unk05", bxf.Unk05.ToString());
+
+                YBinder.WriteBinderFiles(bxf, xw, targetDir, progress);
+                xw.WriteEndElement();
+                xw.Close();
+            }
         }
 
         public static void Repack(string sourceDir, string targetDir)

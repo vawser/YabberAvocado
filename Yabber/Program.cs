@@ -172,8 +172,8 @@ namespace Yabber
                     using (var bxf = new BXF3Reader(inputFile, bdtPath))
                     {
                         bxf.Unpack(filename, bdtFilename, targetDir, progress);
-                        YBUtil.Backup(bdtFilename);
                     }
+                    YBUtil.Backup(bdtFilename);
                 }
                 else
                 {
@@ -192,8 +192,8 @@ namespace Yabber
                     using (var bxf = new BXF4Reader(inputFile, bdtPath))
                     {
                         bxf.Unpack(filename, bdtFilename, targetDir, progress);
-                        YBUtil.Backup(bdtFilename);
                     }
+                    YBUtil.Backup(bdtFilename);
                 }
                 else
                 {
