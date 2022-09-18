@@ -1,5 +1,6 @@
 ﻿using SoulsFormats;
 using System.Xml;
+using System.IO;
 
 namespace Yabber
 {
@@ -7,10 +8,14 @@ namespace Yabber
     {
         public static void Unpack(this LUAGNL gnl, string sourceFile)
         {
+            string targetFile = $"{sourceFile}.xml";
+
+            if (File.Exists(targetFile)) YBUtil.Backup(targetFile);
+
             XmlWriterSettings xws = new XmlWriterSettings();
             xws.Indent = true;
 
-            using (XmlWriter xw = XmlWriter.Create($"{sourceFile}.xml", xws))
+            using (XmlWriter xw = XmlWriter.Create(targetFile, xws))
             {
                 xw.WriteStartElement("luagnl");
                 xw.WriteElementString("bigendian", gnl.BigEndian.ToString());
@@ -42,6 +47,8 @@ namespace Yabber
             }
 
             string outPath = sourceFile.Replace(".luagnl.xml", ".luagnl");
+
+            if (File.Exists(outPath)) YBUtil.Backup(outPath);
 
             gnl.Write(outPath);
         }

@@ -9,6 +9,8 @@ namespace Yabber
     {
         public static void Unpack(this BND4Reader bnd, string sourceName, string targetDir, IProgress<float> progress)
         {
+            if (Directory.Exists(targetDir)) YBUtil.Backup(targetDir);
+
             Directory.CreateDirectory(targetDir);
             var xws = new XmlWriterSettings();
             xws.Indent = true;
@@ -53,6 +55,8 @@ namespace Yabber
             YBinder.ReadBinderFiles(bnd, xml.SelectSingleNode("bnd4/files"), sourceDir);
 
             string outPath = $"{targetDir}\\{filename}";
+
+            if (File.Exists(outPath)) YBUtil.Backup(outPath);
 
             bnd.Write(outPath);
         }

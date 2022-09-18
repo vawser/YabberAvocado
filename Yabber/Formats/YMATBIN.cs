@@ -12,7 +12,11 @@ namespace Yabber
     {
         public static void Unpack(this MATBIN matbin, string sourceFile)
         {
-            YBUtil.XmlSerialize<MATBIN>(matbin, sourceFile);
+            string targetFile = $"{sourceFile}.xml";
+
+            if (File.Exists(targetFile)) YBUtil.Backup(targetFile);
+
+            YBUtil.XmlSerialize<MATBIN>(matbin, targetFile);
         }
 
         public static void Repack(string sourceFile)
@@ -25,6 +29,7 @@ namespace Yabber
             else
                 throw new InvalidOperationException("Invalid MATBIN xml filename.");
 
+            if (File.Exists(outPath)) YBUtil.Backup(outPath);
 
             YBUtil.XmlDeserialize<MATBIN>(sourceFile).Write(outPath);
         }

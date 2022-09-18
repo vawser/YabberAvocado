@@ -9,6 +9,8 @@ namespace Yabber
     {
         public static void Unpack(this BXF4Reader bxf, string bhdName, string bdtName, string targetDir, IProgress<float> progress)
         {
+            if (Directory.Exists(targetDir)) YBUtil.Backup(targetDir);
+
             Directory.CreateDirectory(targetDir);
             var xws = new XmlWriterSettings();
             xws.Indent = true;
@@ -55,6 +57,10 @@ namespace Yabber
 
             string bhdPath = $"{targetDir}\\{bhdFilename}";
             string bdtPath = $"{targetDir}\\{bdtFilename}";
+
+            if (File.Exists(bhdPath)) YBUtil.Backup(bhdPath);
+            if (File.Exists(bdtPath)) YBUtil.Backup(bdtPath);
+
             bxf.Write(bhdPath, bdtPath);
         }
     }

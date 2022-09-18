@@ -9,6 +9,8 @@ namespace Yabber
     {
         public static void Unpack(this TPF tpf, string sourceName, string targetDir, IProgress<float> progress)
         {
+            if (Directory.Exists(targetDir)) YBUtil.Backup(targetDir);
+
 #if !DEBUG
             if (tpf.Platform != TPF.TPFPlatform.PC)
                 throw new NotSupportedException("Yabber does not support console TPFs at the moment.");
@@ -93,6 +95,8 @@ namespace Yabber
             }
 
             string outPath = $"{targetDir}\\{filename}";
+
+            if (File.Exists(outPath)) YBUtil.Backup(outPath);
 
             tpf.Write(outPath);
         }

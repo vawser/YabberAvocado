@@ -1,6 +1,7 @@
 ﻿using SoulsFormats;
 using System;
 using System.Xml;
+using System.IO;
 
 namespace Yabber
 {
@@ -8,13 +9,17 @@ namespace Yabber
     {
         public static void Unpack(this FMG fmg, string sourceFile)
         {
+            string targetFile = $"{sourceFile}.xml";
+
+            if (File.Exists(targetFile)) YBUtil.Backup(targetFile);
+
             XmlWriterSettings xws = new XmlWriterSettings();
             // You need Indent for it to write newlines
             xws.Indent = true;
             // But don't actually indent so there's more room for the text
             xws.IndentChars = "";
 
-            using (XmlWriter xw = XmlWriter.Create($"{sourceFile}.xml", xws))
+            using (XmlWriter xw = XmlWriter.Create(targetFile, xws))
             {
                 xw.WriteStartElement("fmg");
                 xw.WriteElementString("compression", fmg.Compression.ToString());
@@ -59,6 +64,8 @@ namespace Yabber
             }
 
             string outPath = sourceFile.Replace(".fmg.xml", ".fmg");
+
+            if (File.Exists(outPath)) YBUtil.Backup(outPath);
 
             fmg.Write(outPath);
         }

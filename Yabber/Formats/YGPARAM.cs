@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.Xml;
+using System.IO;
 
 namespace Yabber
 {
@@ -12,10 +13,14 @@ namespace Yabber
     {
         public static void Unpack(this GPARAM gparam, string sourceFile)
         {
+            string targetFile = $"{sourceFile}.xml";
+
+            if (File.Exists(targetFile)) YBUtil.Backup(targetFile);
+
             var xws = new XmlWriterSettings();
             xws.Indent = true;
 
-            using (XmlWriter xw = XmlWriter.Create($"{sourceFile}.xml", xws))
+            using (XmlWriter xw = XmlWriter.Create(targetFile, xws))
             {
                 xw.WriteStartElement("gparam");
                 xw.WriteElementString("compression", gparam.Compression.ToString());
@@ -246,6 +251,8 @@ namespace Yabber
                 outPath = sourceFile.Replace(".fltparam.dcx.xml", ".fltparam.dcx");
             else
                 throw new InvalidOperationException("Invalid GPARAM xml filename.");
+
+            if (File.Exists(outPath)) YBUtil.Backup(outPath);
 
             gparam.Write(outPath);
         }

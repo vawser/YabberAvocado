@@ -62,7 +62,7 @@ namespace Yabber
                     }
                     else if (File.Exists(path))
                     {
-                        pause |= ManageFile(path, progress);
+                        pause |= ManageFile(path, progress, false);
                     }
                     else
                     {
@@ -117,7 +117,7 @@ namespace Yabber
             }
         }
 
-        private static bool ManageFile(string sourceFile, IProgress<float> progress)
+        private static bool ManageFile(string sourceFile, IProgress<float> progress, bool shouldMoveToBak)
         {
             string sourceDir = Path.GetDirectoryName(sourceFile);
             string filename = Path.GetFileName(sourceFile);
@@ -170,7 +170,7 @@ namespace Yabber
                     {
                         bxf.Unpack(filename, bdtFilename, targetDir, progress);
                     }
-                    YBUtil.Backup(bdtFilename);
+                    if (shouldMoveToBak) YBUtil.Backup(bdtFilename);
                 }
                 else
                 {
@@ -190,7 +190,7 @@ namespace Yabber
                     {
                         bxf.Unpack(filename, bdtFilename, targetDir, progress);
                     }
-                    YBUtil.Backup(bdtFilename);
+                    if (shouldMoveToBak) YBUtil.Backup(bdtFilename);
                 }
                 else
                 {
@@ -437,43 +437,43 @@ namespace Yabber
                 File.Move($"{sourceFile}.temp", sourceFile);
             }
 
-            YBUtil.Backup(sourceFile);
+            if (shouldMoveToBak) YBUtil.Backup(sourceFile);
 
             return false;
         }
 
         private static bool ManageDir(string sourceDir, IProgress<float> progress)
         {
-            string sourceName = new DirectoryInfo(sourceDir).Name;
+            string sourceDirName = new DirectoryInfo(sourceDir).Name;
             string targetDir = new DirectoryInfo(sourceDir).Parent.FullName;
 
             if (File.Exists($"{sourceDir}\\_yabber-bnd3.xml"))
             {
-                Console.WriteLine($"Repacking BND3: {sourceName}...");
+                Console.WriteLine($"Repacking BND3: {sourceDirName}...");
                 YBND3.Repack(sourceDir, targetDir);
                 YBUtil.Backup(sourceDir);
             }
             else if (File.Exists($"{sourceDir}\\_yabber-bnd4.xml"))
             {
-                Console.WriteLine($"Repacking BND4: {sourceName}...");
+                Console.WriteLine($"Repacking BND4: {sourceDirName}...");
                 YBND4.Repack(sourceDir, targetDir);
                 YBUtil.Backup(sourceDir);
             }
             else if (File.Exists($"{sourceDir}\\_yabber-bxf3.xml"))
             {
-                Console.WriteLine($"Repacking BXF3: {sourceName}...");
+                Console.WriteLine($"Repacking BXF3: {sourceDirName}...");
                 YBXF3.Repack(sourceDir, targetDir);
                 YBUtil.Backup(sourceDir);
             }
             else if (File.Exists($"{sourceDir}\\_yabber-bxf4.xml"))
             {
-                Console.WriteLine($"Repacking BXF4: {sourceName}...");
+                Console.WriteLine($"Repacking BXF4: {sourceDirName}...");
                 YBXF4.Repack(sourceDir, targetDir);
                 YBUtil.Backup(sourceDir);
             }
             else if (File.Exists($"{sourceDir}\\_yabber-tpf.xml"))
             {
-                Console.WriteLine($"Repacking TPF: {sourceName}...");
+                Console.WriteLine($"Repacking TPF: {sourceDirName}...");
                 YTPF.Repack(sourceDir, targetDir);
                 YBUtil.Backup(sourceDir);
             }
@@ -481,7 +481,7 @@ namespace Yabber
             {
                 foreach (string sourceFile in Directory.EnumerateFiles(sourceDir))
                 {
-                    ManageFile(sourceFile, progress);
+                    ManageFile(sourceFile, progress, true);
                 }
             }
 

@@ -134,9 +134,9 @@ namespace Yabber
             });
         }
 
-        public static void XmlSerialize<T>(object obj, string sourceFile)
+        public static void XmlSerialize<T>(object obj, string targetFile)
         {
-            using (var xw = XmlWriter.Create($"{sourceFile}.xml", new XmlWriterSettings() { Indent = true }))
+            using (var xw = XmlWriter.Create(targetFile, new XmlWriterSettings() { Indent = true }))
             {
                 var xmlSer = new XmlSerializer(typeof(T));
 

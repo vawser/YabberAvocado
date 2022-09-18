@@ -13,7 +13,11 @@ namespace Yabber
     {
         public static void Unpack(this MSB1 msb, string sourceFile)
         {
-            File.WriteAllText($"{sourceFile}.json", YBUtil.JsonSerialize(msb));
+            string targetFile = $"{sourceFile}.json";
+
+            if (File.Exists(targetFile)) YBUtil.Backup(targetFile);
+
+            File.WriteAllText(targetFile, YBUtil.JsonSerialize(msb));
         }
 
         public static void Repack(string sourceFile)
@@ -26,6 +30,7 @@ namespace Yabber
             else
                 throw new InvalidOperationException("Invalid MSB1 json filename.");
 
+            if (File.Exists(outPath)) YBUtil.Backup(outPath);
 
             YBUtil.JsonDeserialize<MSB1>(File.ReadAllText(sourceFile)).Write(outPath);
         }

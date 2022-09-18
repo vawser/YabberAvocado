@@ -12,7 +12,11 @@ namespace Yabber
     {
         public static void Unpack(this FXR3 fxr, string sourceFile)
         {
-            YBUtil.XmlSerialize<FXR3>(fxr, sourceFile);
+            string targetFile = $"{sourceFile}.xml";
+
+            if (File.Exists(targetFile)) YBUtil.Backup(targetFile);
+
+            YBUtil.XmlSerialize<FXR3>(fxr, targetFile);
         }
 
         public static void Repack(string sourceFile)
@@ -25,6 +29,7 @@ namespace Yabber
             else
                 throw new InvalidOperationException("Invalid FXR3 xml filename.");
 
+            if (File.Exists(outPath)) YBUtil.Backup(outPath);
 
             YBUtil.XmlDeserialize<FXR3>(sourceFile).Write(outPath);
         }

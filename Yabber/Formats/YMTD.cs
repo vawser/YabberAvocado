@@ -12,7 +12,11 @@ namespace Yabber
     {
         public static void Unpack(this MTD mtd, string sourceFile)
         {
-            YBUtil.XmlSerialize<MTD>(mtd, sourceFile);
+            string targetFile = $"{sourceFile}.xml";
+
+            if (File.Exists(targetFile)) YBUtil.Backup(targetFile);
+
+            YBUtil.XmlSerialize<MTD>(mtd, targetFile);
         }
 
         public static void Repack(string sourceFile)
@@ -25,6 +29,7 @@ namespace Yabber
             else
                 throw new InvalidOperationException("Invalid MTD xml filename.");
 
+            if (File.Exists(outPath)) YBUtil.Backup(outPath);
 
             YBUtil.XmlDeserialize<MTD>(sourceFile).Write(outPath);
         }
