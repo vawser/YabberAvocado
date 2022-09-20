@@ -451,31 +451,26 @@ namespace Yabber
             {
                 Console.WriteLine($"Repacking BND3: {sourceDirName}...");
                 YBND3.Repack(sourceDir, targetDir);
-                YBUtil.Backup(sourceDir);
             }
             else if (File.Exists($"{sourceDir}\\_yabber-bnd4.xml"))
             {
                 Console.WriteLine($"Repacking BND4: {sourceDirName}...");
                 YBND4.Repack(sourceDir, targetDir);
-                YBUtil.Backup(sourceDir);
             }
             else if (File.Exists($"{sourceDir}\\_yabber-bxf3.xml"))
             {
                 Console.WriteLine($"Repacking BXF3: {sourceDirName}...");
                 YBXF3.Repack(sourceDir, targetDir);
-                YBUtil.Backup(sourceDir);
             }
             else if (File.Exists($"{sourceDir}\\_yabber-bxf4.xml"))
             {
                 Console.WriteLine($"Repacking BXF4: {sourceDirName}...");
                 YBXF4.Repack(sourceDir, targetDir);
-                YBUtil.Backup(sourceDir);
             }
             else if (File.Exists($"{sourceDir}\\_yabber-tpf.xml"))
             {
                 Console.WriteLine($"Repacking TPF: {sourceDirName}...");
                 YTPF.Repack(sourceDir, targetDir);
-                YBUtil.Backup(sourceDir);
             }
             else
             {
