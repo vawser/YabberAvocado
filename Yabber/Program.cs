@@ -478,6 +478,11 @@ namespace Yabber
                 {
                     ManageFile(sourceFile, progress, true);
                 }
+
+                foreach (string dir in Directory.EnumerateDirectories(sourceDir))
+                {
+                    ManageDir(dir, progress);
+                }
             }
 
             return false;
