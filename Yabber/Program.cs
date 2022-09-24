@@ -481,7 +481,12 @@ namespace Yabber
 
                 foreach (string dir in Directory.EnumerateDirectories(sourceDir))
                 {
-                    ManageDir(dir, progress);
+                    string dirName = new DirectoryInfo(dir).Name;
+
+                    if (!dirName.StartsWith("BAK"))
+                    {
+                        ManageDir(dir, progress);
+                    }
                 }
             }
 
