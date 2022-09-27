@@ -27,6 +27,7 @@ namespace Yabber
                 xw.WriteElementString("game", gparam.Game.ToString());
                 xw.WriteElementString("unk0D", gparam.Unk0D.ToString());
                 xw.WriteElementString("unk14", gparam.Unk14.ToString());
+                xw.WriteElementString("unk40", gparam.Unk40.ToString());
                 if (gparam.Game == GPARAM.GPGame.Sekiro)
                     xw.WriteElementString("unk50", gparam.Unk50.ToString());
 
@@ -58,7 +59,7 @@ namespace Yabber
                             xw.WriteStartElement("value");
                             xw.WriteAttributeString("id", param.ValueIDs[i].ToString());
                             if (gparam.Game == GPARAM.GPGame.Sekiro)
-                                xw.WriteAttributeString("float", param.UnkFloats[i].ToString());
+                                xw.WriteAttributeString("timeOfDay", param.TimeOfDay[i].ToString());
 
                             if (param.Type == GPARAM.ParamType.Float2)
                             {
@@ -124,6 +125,7 @@ namespace Yabber
             Enum.TryParse(xml.SelectSingleNode("gparam/game").InnerText, out gparam.Game);
             gparam.Unk0D = bool.Parse(xml.SelectSingleNode("gparam/unk0D").InnerText);
             gparam.Unk14 = int.Parse(xml.SelectSingleNode("gparam/unk14").InnerText);
+            gparam.Unk40 = float.Parse(xml.SelectSingleNode("gparam/unk40").InnerText);
             if (gparam.Game == GPARAM.GPGame.Sekiro)
                 gparam.Unk50 = float.Parse(xml.SelectSingleNode("gparam/unk50").InnerText);
 
@@ -158,14 +160,14 @@ namespace Yabber
                         string paramName2 = paramNode.Attributes["name2"].InnerText;
                         param = new GPARAM.Param(paramName1, paramName2, paramType);
                         if (gparam.Game == GPARAM.GPGame.Sekiro)
-                            param.UnkFloats = new List<float>();
+                            param.TimeOfDay = new List<float>();
                     }
 
                     foreach (XmlNode value in paramNode.SelectNodes("value"))
                     {
                         param.ValueIDs.Add(int.Parse(value.Attributes["id"].InnerText));
                         if (gparam.Game == GPARAM.GPGame.Sekiro)
-                            param.UnkFloats.Add(float.Parse(value.Attributes["float"].InnerText));
+                            param.TimeOfDay.Add(float.Parse(value.Attributes["timeOfDay"].InnerText));
 
                         switch (param.Type)
                         {

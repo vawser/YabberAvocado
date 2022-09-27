@@ -23,6 +23,11 @@ namespace SoulsFormats
         /// Unknown; in DS2, number of entries in UnkBlock2.
         /// </summary>
         public int Unk14;
+        
+        /// <summary>
+        /// Unknown. 0 in all games except Elden Ring
+        /// </summary>
+        public float Unk40;
 
         /// <summary>
         /// Unknown; only present in Sekiro.
@@ -97,7 +102,7 @@ namespace SoulsFormats
             int unk3Count = br.ReadInt32();
             offsets.Unk3 = br.ReadInt32();
             offsets.Unk3ValueIDs = br.ReadInt32();
-            br.AssertInt32(0, 0x40D00000, 0x40E00000, 0x40900000);
+            Unk40 = br.ReadSingle();
 
             if (Game == GPGame.DarkSouls3 || Game == GPGame.Sekiro)
             {
@@ -174,7 +179,8 @@ namespace SoulsFormats
             bw.WriteInt32(Unk3s.Count);
             bw.ReserveInt32("UnkOffset3");
             bw.ReserveInt32("Unk3ValuesOffset");
-            bw.WriteInt32(0);
+            
+            bw.WriteSingle(Unk40);
 
             if (Game == GPGame.DarkSouls3 || Game == GPGame.Sekiro)
             {
@@ -533,9 +539,9 @@ namespace SoulsFormats
             public List<int> ValueIDs;
 
             /// <summary>
-            /// Unknown; one for each value ID, only present in Sekiro.
+            /// The times of day associated with the values
             /// </summary>
-            public List<float> UnkFloats;
+            public List<float> TimeOfDay;
 
             /// <summary>
             /// Creates a new Param with no values or unk1s.
@@ -547,7 +553,7 @@ namespace SoulsFormats
                 Type = type;
                 Values = new List<object>();
                 ValueIDs = new List<int>();
-                UnkFloats = null;
+                TimeOfDay = null;
             }
 
             internal Param(BinaryReaderEx br, GPGame game, Offsets offsets)
@@ -638,15 +644,15 @@ namespace SoulsFormats
                     {
                         ValueIDs = new List<int>(valueCount);
                         if (game == GPGame.Sekiro)
-                            UnkFloats = new List<float>(valueCount);
+                            TimeOfDay = new List<float>(valueCount);
                         else
-                            UnkFloats = null;
+                            TimeOfDay = null;
 
                         for (int i = 0; i < valueCount; i++)
                         {
                             ValueIDs.Add(br.ReadInt32());
                             if (game == GPGame.Sekiro)
-                                UnkFloats.Add(br.ReadSingle());
+                                TimeOfDay.Add(br.ReadSingle());
                         }
                     }
                     br.StepOut();
@@ -748,7 +754,7 @@ namespace SoulsFormats
                 {
                     bw.WriteInt32(ValueIDs[i]);
                     if (game == GPGame.Sekiro)
-                        bw.WriteSingle(UnkFloats[i]);
+                        bw.WriteSingle(TimeOfDay[i]);
                 }
             }
 
