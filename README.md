@@ -1,4 +1,5 @@
 ## Note: This repo will not be updated. It only serves the purpose of archiving YabberAvocado, which is, as of November 13th, 2022, no longer maintained and unavailable to download from the original maintainer's repository.
+Due to potential problems with the code, this project should only ever be used as a reference. Problems will not be addressed.
 
 # Yabber
 An unpacker/repacker for common Demon's Souls, Dark Souls 1-3, Bloodborne, and Sekiro file formats.\
