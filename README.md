@@ -1,3 +1,6 @@
+## Note: This repo will not be updated. It only serves the purpose of archiving YabberAvocado, which is, as of November 13th, 2022, no longer maintained and unavailable to download from the original maintainer's repository.
+Due to potential problems with the code, this project should only ever be used as a reference. Problems will not be addressed.
+
 # Yabber
 An unpacker/repacker for common Demon's Souls, Dark Souls 1-3, Bloodborne, and Sekiro file formats.\
 Supports `.btab, .fxr, .msb, .blt, .matbin, .mtd, .bnd, .bhd/.bdt, .dcx, .fltparam, .fmg, .gparam, .luagnl, .luainfo, .tpf`.\
@@ -19,8 +22,26 @@ Please see the included readme for detailed instructions.
 *katalash* - GPARAM support\
 *TKGP* - Everything else\
 *Rayan* - Testing
+*Avocado* - Additional formats (among other features)
 
 # Changelog
+### 1.0.6 - Final Update
+* Added Unk40 to gparams - fixed issues for ER
+
+### 1.0.5
+* Recursive un/repacking of folders (in other words subfolders get un/repacked too)
+
+### 1.0.4
+* Fixed Elden Ring gparams conversion
+* Removed some unnecessary backups
+
+### 1.0.3
+* Preemptively backup files only when processing a folder for easier conversion back and forth.
+* When processing file/files, backups are created only when the file/files to be created already exist.
+
+### 1.0.2
+* Bugfixes
+
 ### 1.0.1
 * Drag and drop a folder to convert every file inside it
 * Backup folders instead of files.
