@@ -337,8 +337,8 @@ namespace SoulsFormats
                     {
                         switch (valueType)
                         {
-                            case DataType.Byte: bw.WriteByte((byte)Value); break;
-                            case DataType.Float: bw.WriteSingle((float)Value); break;
+                            case DataType.Byte: bw.WriteByte(Convert.ToByte(Value)); break;
+                            case DataType.Float: bw.WriteSingle(Convert.ToSingle(Value)); break;
                             default: throw new NotSupportedException($"Unsupported sequence value type: {valueType}");
                         }
 
